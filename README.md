@@ -40,3 +40,6 @@
 3. Запустить проект
    ```bash
    docker-compose -f docker-compose.dev.yml up -d
+Документация: 
+```bash
+http://localhost:8000/docs#/
