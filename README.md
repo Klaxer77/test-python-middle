@@ -40,5 +40,3 @@
 3. Запустить проект
    ```bash
    docker-compose -f docker-compose.dev.yml up -d
-   
-# test-python-middle
