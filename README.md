@@ -12,7 +12,7 @@
    ```
    1.2 Запустить контейнер
    ```bash
-   docker run --name some-redis -p 6379:6379 -d redis
+   docker run --name some-redis -p 6379:6379 -d redis:7
    
 3. Склонировать репозиторий:
    ```bash
