@@ -1,6 +1,8 @@
-from app.exceptions.base import BaseHTTPException
 from fastapi import status
+
+from app.exceptions.base import BaseHTTPException
+
 
 class ExcItemNotFound(BaseHTTPException):
     status_code = status.HTTP_404_NOT_FOUND
-    detail = "Задача не существует"
+    detail = "Задачи не существует"

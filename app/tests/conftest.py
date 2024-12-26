@@ -1,22 +1,23 @@
 import json
-import pytest_asyncio
 from datetime import datetime
+
+import pytest_asyncio
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy import insert
+
+from app.config import settings
 from app.database import Base, async_session_maker, engine
 from app.item.models import TodoItem
-from app.config import settings
-from httpx import AsyncClient, ASGITransport
-from app.logger import RedisHandler
 from app.main import app as fastapi_app
-from app.utils.redis import redis_helper
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache import FastAPICache
+from app.utils.redis_helper import redis_helper
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def setup_db():
     assert settings.MODE == "TEST"
-    
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
@@ -33,7 +34,7 @@ async def setup_db():
         )
 
     async with async_session_maker() as session:
-       
+
         add_transactions = insert(TodoItem).values(items)
 
         await session.execute(add_transactions)
@@ -46,7 +47,10 @@ async def setup_redis():
     redis = await redis_helper.connect()
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
-@pytest_asyncio.fixture(scope="function")       
+
+@pytest_asyncio.fixture(scope="function")
 async def ac():
-    async with AsyncClient(transport=ASGITransport(fastapi_app), base_url="http://test") as ac:
+    async with AsyncClient(
+        transport=ASGITransport(fastapi_app), base_url="http://test"
+    ) as ac:
         yield ac
